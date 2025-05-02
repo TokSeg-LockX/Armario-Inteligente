@@ -9,7 +9,10 @@ A solução integra-se ao aplicativo TokSeg, permitindo notificações em tempo 
 ---
 
 ```
-O projeto ainda está em construção, ou seja, as tecnologias e funcionalidades podem ser moldadas de acordo com as necessidades.
+
+O projeto ainda está em construção, ou seja, as tecnologias e
+funcionalidades podem ser moldadas de acordo com as necessidades.
+
 ```
 
 ## Funcionalidades Principais
