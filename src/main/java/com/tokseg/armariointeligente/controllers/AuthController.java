@@ -2,17 +2,17 @@ package com.tokseg.armariointeligente.controllers;
 
 import com.tokseg.armariointeligente.dtos.LoginDTO;
 import com.tokseg.armariointeligente.dtos.RegisterDTO;
+import com.tokseg.armariointeligente.exception.BadRequestException;
 import com.tokseg.armariointeligente.models.usuario.Usuario;
 import com.tokseg.armariointeligente.security.JwtUtil;
 import com.tokseg.armariointeligente.services.UsuarioService;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import org.springframework.web.bind.annotation.RequestBody;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,18 +45,23 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody @Valid LoginDTO loginDTO) {
+        try {
+            Usuario usuario = usuarioService.buscarPorEmail(loginDTO.getEmail())
+                    .orElseThrow(() -> new UsernameNotFoundException(
+                            "Usuário não encontrado com o email informado."));
 
-        System.out.println("Tentando login com email: " + loginDTO.getEmail());
+            if (!passwordEncoder.matches(loginDTO.getSenha(), usuario.getSenha())) {
+                throw new BadCredentialsException("Senha inválida. Verifique suas credenciais.");
+            }
 
-        Usuario usuario = usuarioService.buscarPorEmail(loginDTO.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado."));
-
-        if (!passwordEncoder.matches(loginDTO.getSenha(), usuario.getSenha())) {
-            throw new BadCredentialsException("Senha inválida.");
+            String token = jwtUtil.gerarToken(usuario);
+            return ResponseEntity.ok(Map.of("token", token, "usuario",
+                    Map.of("id", usuario.getId(), "nome", usuario.getNome(), "email",
+                            usuario.getEmail(), "tipo", usuario.getTipo())));
+        } catch (UsernameNotFoundException | BadCredentialsException e) {
+            // Transformando em BadRequestException para ser tratada pelo handler específico
+            throw new BadRequestException("Credenciais inválidas: " + e.getMessage());
         }
-
-        String token = jwtUtil.gerarToken(usuario);
-        return ResponseEntity.ok(Map.of("token", token));
     }
 }
 
