@@ -2,6 +2,7 @@ package com.tokseg.armariointeligente.controllers;
 
 import com.tokseg.armariointeligente.dtos.LoginDTO;
 import com.tokseg.armariointeligente.dtos.RegisterDTO;
+import com.tokseg.armariointeligente.dtos.UsuarioRequestDTO;
 import com.tokseg.armariointeligente.exception.BadRequestException;
 import com.tokseg.armariointeligente.models.usuario.Usuario;
 import com.tokseg.armariointeligente.security.JwtUtil;
@@ -31,15 +32,15 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<Usuario> cadastrar(@RequestBody @Valid RegisterDTO dto) {
-        Usuario usuario = new Usuario();
-        usuario.setNome(dto.getNome());
-        usuario.setEmail(dto.getEmail());
-        usuario.setTelefone(dto.getTelefone());
-        usuario.setSenha(passwordEncoder.encode(dto.getSenha()));
-        usuario.setTipo(dto.getTipo());
-        usuario.setAtivo(true);
+        // Convertendo RegisterDTO para UsuarioRequestDTO
+        UsuarioRequestDTO usuarioDTO = new UsuarioRequestDTO();
+        usuarioDTO.setNome(dto.getNome());
+        usuarioDTO.setEmail(dto.getEmail());
+        usuarioDTO.setTelefone(dto.getTelefone());
+        usuarioDTO.setSenha(dto.getSenha());
+        usuarioDTO.setTipoUsuario(dto.getTipo());
 
-        Usuario salvo = usuarioService.cadastrar(usuario);
+        Usuario salvo = usuarioService.cadastrar(usuarioDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(salvo);
     }
 
@@ -49,6 +50,10 @@ public class AuthController {
             Usuario usuario = usuarioService.buscarPorEmail(loginDTO.getEmail())
                     .orElseThrow(() -> new UsernameNotFoundException(
                             "Usuário não encontrado com o email informado."));
+
+            if (!usuario.getAtivo()) {
+                throw new BadCredentialsException("Usuário inativo. Contate o administrador.");
+            }
 
             if (!passwordEncoder.matches(loginDTO.getSenha(), usuario.getSenha())) {
                 throw new BadCredentialsException("Senha inválida. Verifique suas credenciais.");
