@@ -1,0 +1,205 @@
+### Variables
+@baseUrl = http://localhost:8080
+@authToken = {{login.response.body.token}}
+
+### Health Check
+GET {{baseUrl}}/actuator/health
+
+### Autenticação
+
+# @name login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@tokseg.com",
+  "senha": "admin123"
+}
+
+# Register
+### cria usuario
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+  "nome": "Novo Usuário",
+  "email": "usuario@example.com",
+  "telefone": "79999999999",
+  "senha": "senha123",
+  "tipo": "MORADOR"
+}
+
+### Usuários
+# Listar todos usuários
+GET {{baseUrl}}/api/usuarios
+Authorization: Bearer {{authToken}}
+
+# Buscar usuário por ID
+###
+GET {{baseUrl}}/api/usuarios/1
+Authorization: Bearer {{authToken}}
+
+# Atualizar usuário
+###
+PUT {{baseUrl}}/api/usuarios/1
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "nome": "Usuário Atualizado",
+  "email": "atualizado@example.com",
+  "telefone": "79999999999"
+}
+
+# Desativar usuário
+###
+DELETE {{baseUrl}}/api/usuarios/2
+Authorization: Bearer {{authToken}}
+
+# Ativar usuário
+###
+PUT {{baseUrl}}/api/usuarios/2/ativar
+Authorization: Bearer {{authToken}}
+
+### Armários
+# Listar todos armários
+GET {{baseUrl}}/api/armarios
+Authorization: Bearer {{authToken}}
+
+###
+# Buscar armário por ID
+GET {{baseUrl}}/api/armarios/1
+Authorization: Bearer {{authToken}}
+
+###
+# Criar armário
+POST {{baseUrl}}/api/armarios
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "numero": "A101",
+  "localizacao": "Bloco A",
+  "status": "ATIVO"
+}
+
+### Compartimentos
+# Listar compartimentos por armário
+GET {{baseUrl}}/api/compartimentos/armario/1
+Authorization: Bearer {{authToken}}
+
+###
+# Atualizar status do compartimento
+PUT {{baseUrl}}/api/compartimentos/1/status?status=DISPONIVEL
+Authorization: Bearer {{authToken}}
+
+### Entregas
+# Listar entregas por usuário
+GET {{baseUrl}}/api/entregas/usuario/1
+Authorization: Bearer {{authToken}}
+
+###
+# Registrar entrega
+POST {{baseUrl}}/api/entregas
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "codigoRastreio": "BR123456789",
+  "destinatario": {
+    "id": 2
+  },
+  "compartimento": {
+    "id": 1
+  }
+}
+
+###
+# Atualizar status da entrega
+PUT {{baseUrl}}/api/entregas/1/status?status=ENTREGUE
+Authorization: Bearer {{authToken}}
+
+### Retiradas
+# Registrar retirada
+POST {{baseUrl}}/api/retiradas
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "entrega": {
+    "id": 1
+  },
+  "usuario": {
+    "id": 2
+  },
+  "metodoAutenticacao": "PIN"
+}
+
+### Autorizações
+# Conceder autorização
+POST {{baseUrl}}/api/autorizacoes
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "usuario": {
+    "id": 2
+  },
+  "autorizado": {
+    "id": 3
+  },
+  "entrega": {
+    "id": 1
+  },
+  "dataValidade": "2023-12-31T23:59:59"
+}
+
+###
+# Listar autorizações por usuário
+GET {{baseUrl}}/api/autorizacoes/usuario/2
+Authorization: Bearer {{authToken}}
+
+### Notificações
+# Enviar notificação
+POST {{baseUrl}}/api/notificacoes
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "usuario": {
+    "id": 2
+  },
+  "titulo": "Nova entrega",
+  "mensagem": "Sua encomenda chegou!",
+  "tipo": "ENTREGA"
+}
+
+###
+# Listar notificações por usuário
+GET {{baseUrl}}/api/notificacoes/usuario/2
+Authorization: Bearer {{authToken}}
+
+### Logs de Acesso
+# Registrar log
+POST {{baseUrl}}/api/logs
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "usuario": {
+    "id": 2
+  },
+  "compartimento": {
+    "id": 1
+  },
+  "tipoAcesso": "RETIRADA",
+  "sucesso": true
+}
+
+###
+# Listar logs por usuário
+GET {{baseUrl}}/api/logs/usuario/2
+Authorization: Bearer {{authToken}}
+
+
+
