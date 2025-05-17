@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.tokseg.armariointeligente.dtos.LoginDTO;
 import com.tokseg.armariointeligente.dtos.RegisterDTO;
+import com.tokseg.armariointeligente.dtos.UsuarioRequestDTO;
 import com.tokseg.armariointeligente.dtos.UsuarioResponseDTO;
 import com.tokseg.armariointeligente.exception.BadRequestException;
 import com.tokseg.armariointeligente.models.usuario.Usuario;
@@ -31,15 +32,11 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<UsuarioResponseDTO> cadastrar(@RequestBody @Valid RegisterDTO dto) {
-        Usuario usuario = new Usuario();
-        usuario.setNome(dto.nome());
-        usuario.setEmail(dto.email());
-        usuario.setTelefone(dto.telefone());
-        usuario.setSenha(dto.senha()); // Movendo a criptografia para o serviço
-        usuario.setTipo(dto.tipo());
-        usuario.setAtivo(true);
+        // Converter RegisterDTO para UsuarioRequestDTO
+        UsuarioRequestDTO requestDTO = new UsuarioRequestDTO(dto.nome(), dto.email(),
+                dto.telefone(), dto.senha(), dto.tipo());
 
-        Usuario salvo = usuarioService.cadastrar(usuario);
+        Usuario salvo = usuarioService.cadastrar(requestDTO);
         UsuarioResponseDTO response = usuarioService.toResponseDTO(salvo);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
