@@ -18,14 +18,6 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public Usuario cadastrar(Usuario usuario) {
-        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
-            throw new ResourceAlreadyExistsException("Usuário", "email", usuario.getEmail());
-        }
-        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
-        return usuarioRepository.save(usuario);
-    }
-
     public Usuario cadastrar(UsuarioRequestDTO dto) {
         if (usuarioRepository.existsByEmail(dto.email())) {
             throw new ResourceAlreadyExistsException("Usuário", "email", dto.email());
