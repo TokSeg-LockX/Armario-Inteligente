@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.tokseg.armariointeligente.dtos.LoginDTO;
 import com.tokseg.armariointeligente.dtos.RegisterDTO;
+import com.tokseg.armariointeligente.dtos.UsuarioResponseDTO;
 import com.tokseg.armariointeligente.exception.BadRequestException;
 import com.tokseg.armariointeligente.models.usuario.Usuario;
 import com.tokseg.armariointeligente.security.JwtUtil;
@@ -29,17 +30,19 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
-    public ResponseEntity<Usuario> cadastrar(@RequestBody @Valid RegisterDTO dto) {
+    public ResponseEntity<UsuarioResponseDTO> cadastrar(@RequestBody @Valid RegisterDTO dto) {
         Usuario usuario = new Usuario();
         usuario.setNome(dto.nome());
         usuario.setEmail(dto.email());
         usuario.setTelefone(dto.telefone());
-        usuario.setSenha(dto.senha());
+        usuario.setSenha(dto.senha()); // Movendo a criptografia para o serviço
         usuario.setTipo(dto.tipo());
         usuario.setAtivo(true);
 
-        Usuario salvo = usuarioService.cadastrarUsuario(usuario);
-        return ResponseEntity.status(HttpStatus.CREATED).body(salvo);
+        Usuario salvo = usuarioService.cadastrar(usuario);
+        UsuarioResponseDTO response = usuarioService.toResponseDTO(salvo);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/login")
@@ -56,11 +59,9 @@ public class AuthController {
             if (!passwordEncoder.matches(loginDTO.getSenha(), usuario.getSenha())) {
                 throw new BadCredentialsException("Senha inválida. Verifique suas credenciais.");
             }
-
             String token = jwtUtil.gerarToken(usuario);
-            return ResponseEntity.ok(Map.of("token", token, "usuario",
-                    Map.of("id", usuario.getId(), "nome", usuario.getNome(), "email",
-                            usuario.getEmail(), "tipo", usuario.getTipo())));
+            UsuarioResponseDTO usuarioResponse = usuarioService.toResponseDTO(usuario);
+            return ResponseEntity.ok(Map.of("token", token, "usuario", usuarioResponse));
         } catch (UsernameNotFoundException | BadCredentialsException e) {
             // Transformando em BadRequestException para ser tratada pelo handler específico
             throw new BadRequestException("Credenciais inválidas: " + e.getMessage());
