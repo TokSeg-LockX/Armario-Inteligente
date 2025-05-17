@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.tokseg.armariointeligente.dtos.UsuarioRequestDTO;
+import com.tokseg.armariointeligente.dtos.UsuarioResponseDTO;
 import com.tokseg.armariointeligente.exception.ResourceAlreadyExistsException;
 import com.tokseg.armariointeligente.exception.ResourceNotFoundException;
 import com.tokseg.armariointeligente.models.usuario.Usuario;
@@ -14,22 +15,28 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UsuarioService {
-
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
 
+    public Usuario cadastrar(Usuario usuario) {
+        if (usuarioRepository.existsByEmail(usuario.getEmail())) {
+            throw new ResourceAlreadyExistsException("Usuário", "email", usuario.getEmail());
+        }
+        usuario.setSenha(passwordEncoder.encode(usuario.getSenha()));
+        return usuarioRepository.save(usuario);
+    }
 
     public Usuario cadastrar(UsuarioRequestDTO dto) {
-        if (usuarioRepository.existsByEmail(dto.getEmail())) {
-            throw new ResourceAlreadyExistsException("Usuário", "email", dto.getEmail());
+        if (usuarioRepository.existsByEmail(dto.email())) {
+            throw new ResourceAlreadyExistsException("Usuário", "email", dto.email());
         }
 
         Usuario usuario = new Usuario();
-        usuario.setNome(dto.getNome());
-        usuario.setEmail(dto.getEmail());
-        usuario.setTelefone(dto.getTelefone());
-        usuario.setSenha(passwordEncoder.encode(dto.getSenha()));
-        usuario.setTipo(dto.getTipoUsuario());
+        usuario.setNome(dto.nome());
+        usuario.setEmail(dto.email());
+        usuario.setTelefone(dto.telefone());
+        usuario.setSenha(passwordEncoder.encode(dto.senha()));
+        usuario.setTipo(dto.tipoUsuario());
         usuario.setAtivo(true);
 
         return usuarioRepository.save(usuario);
@@ -58,12 +65,12 @@ public class UsuarioService {
 
     public Usuario atualizar(Long id, UsuarioRequestDTO dto) {
         Usuario usuario = buscarPorId(id);
-        usuario.setNome(dto.getNome());
-        usuario.setTelefone(dto.getTelefone());
-        usuario.setTipo(dto.getTipoUsuario());
+        usuario.setNome(dto.nome());
+        usuario.setTelefone(dto.telefone());
+        usuario.setTipo(dto.tipoUsuario());
 
-        if (dto.getSenha() != null && !dto.getSenha().isEmpty()) {
-            usuario.setSenha(passwordEncoder.encode(dto.getSenha()));
+        if (dto.senha() != null && !dto.senha().isEmpty()) {
+            usuario.setSenha(passwordEncoder.encode(dto.senha()));
         }
 
         return usuarioRepository.save(usuario);
@@ -79,6 +86,18 @@ public class UsuarioService {
         Usuario usuario = buscarPorId(id);
         usuario.setAtivo(true);
         return usuarioRepository.save(usuario);
+    }
+
+    public UsuarioResponseDTO toResponseDTO(Usuario usuario) {
+        UsuarioResponseDTO responseDTO = new UsuarioResponseDTO();
+        responseDTO.setId(usuario.getId());
+        responseDTO.setNome(usuario.getNome());
+        responseDTO.setEmail(usuario.getEmail());
+        responseDTO.setTelefone(usuario.getTelefone());
+        responseDTO.setTipoUsuario(usuario.getTipo());
+        responseDTO.setAtivo(usuario.getAtivo());
+        responseDTO.setDataCadastro(usuario.getDataCadastro());
+        return responseDTO;
     }
 
 }
