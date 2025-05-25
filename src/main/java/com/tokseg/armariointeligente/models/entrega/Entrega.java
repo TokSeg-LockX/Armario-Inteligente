@@ -6,6 +6,7 @@ import com.tokseg.armariointeligente.models.compartimento.Compartimento;
 import com.tokseg.armariointeligente.models.usuario.Usuario;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "entrega")
@@ -36,6 +37,12 @@ public class Entrega {
     private StatusEntrega status;
 
     private String descricao;
+
+    private String pinEntregador; // PIN para o entregador colocar o item
+    private LocalDateTime pinEntregadorValidade; // Validade do PIN do entregador
+
+    private String pinDestinatario; // PIN para o usuário/destinatário retirar o item
+    private LocalDateTime pinDestinatarioValidade; //
 }
 
 
