@@ -39,46 +39,24 @@ O **LockX** é um sistema de armário inteligente projetado para facilitar a ges
 
 - **Hibernate ORM**: Mapeamento objeto-relacional. 
 
-<br>
-<p align="">
-  <img src="https://img.shields.io/badge/Flyway-CC0200?logo=flyway&logoColor=fff&style=for-the-badge" alt="Flyway Logo" />
-</p>
-
-- **Flyway**: Controle de versões do banco de dados. 
-
-<br> 
+ <br>
 <p align="">
   <img src="https://img.shields.io/badge/Swagger-85EA2D?logo=swagger&logoColor=000&style=for-the-badge" alt="Swagger Logo" />
 </p>
 
 - **Swagger/OpenAPI**: Documentação da API.  
-
 <br>
 
 ### 🗄️ Banco de Dados (em construção)  
 
 <p>
    <img src="https://img.shields.io/badge/PostgreSQL-4169E1?logo=postgresql&logoColor=fff&style=for-the-badge" alt="PostgresSQL Logo"/>
-   <img src="https://img.shields.io/badge/MySQL-4479A1?logo=mysql&logoColor=fff&style=for-the-badge" alt="MySQL Logo"/>
 </p>
 
 - **PostgreSQL**: Ambiente de produção.  
-- **MySQL**: Ambiente de testes e prototipagem.  
 
 ### Notificações (em construção)  
-- **Spring Mail**: Envio de emails.  
-- **Push Notifications**: Integração com o app TokSeg.  
-
-### Monitoramento e Logs (em construção)  
-
-<p align="">
-  <img src="https://img.shields.io/badge/Prometheus-E6522C?logo=prometheus&logoColor=fff&style=for-the-badge" alt="Prometheus Logo" />
-  <img src="https://img.shields.io/badge/Grafana-F46800?logo=grafana&logoColor=fff&style=for-the-badge" alt="Grafana Logo" />
-</p>
-
-- **Prometheus + Grafana**: Monitoramento de métricas.  
-- **ELK Stack**: Logs centralizados.  
-- **Spring Sleuth + Zipkin**: Rastreamento de requisições.  
+- **Spring Mail**: Envio de emails.    
 
 ---
 
