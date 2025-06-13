@@ -1,8 +1,5 @@
-# 🔒 LockX - Sistema de Armário Inteligente  
+# 🔒 LockX - Sistema de Armário Inteligente    <img src="https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java Logo" />
 
-<p align="">
-  <img src="https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java Logo" />
-</p>
 
 ## 📝 Descrição  
 O **LockX** é um sistema de armário inteligente projetado para facilitar a gestão e o uso de armários em condomínios e empresas. Ele oferece funcionalidades avançadas para cadastro de usuários, gestão de compartimentos, notificações de entregas e muito mais, garantindo segurança e praticidade.  
